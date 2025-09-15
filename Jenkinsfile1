@@ -66,11 +66,19 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh ''' 
+
                             echo "Building Docker image..."
                             docker build --no-cache -t anitha3107/bms:latest -f bookmyshow-app/Dockerfile bookmyshow-app
 
                             echo "Pushing Docker image to registry..."
                             docker push anitha3107/bms:latest
+
+                        echo "Building Docker image..."
+                        docker build --no-cache -t anitha3107/bms:latest -f bookmyshow-app/Dockerfile bookmyshow-app
+
+                        echo "Pushing Docker image to registry..."
+                        docker push anitha3107/bms:latest
+
                         '''
                     }
                 }
@@ -84,8 +92,13 @@ pipeline {
                     docker stop bms || true
                     docker rm bms || true
 
+
                     echo "Running new container on port 3000..."
                     docker run -d --restart=always --name bms -p 3000:3000 anitha3107/bms:latest
+
+                echo "Running new container on port 3000..."
+                docker run -d --restart=always --name bms -p 3000:3000 anitha3107/bms:latest
+
 
                     echo "Checking running containers..."
                     docker ps -a
@@ -106,8 +119,13 @@ pipeline {
                 body: "Project: ${env.JOB_NAME}<br/>" +
                       "Build Number: ${env.BUILD_NUMBER}<br/>" +
                       "URL: ${env.BUILD_URL}<br/>",
+
                 to: 'anithakaluputi07@gmail.com'
             )
+
+                to: 'anithakaluputi07@gmail.com',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+
         }
     }
 }
